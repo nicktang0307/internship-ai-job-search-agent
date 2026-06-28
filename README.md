@@ -88,9 +88,9 @@ A bunch of JSON files so it doesn't keep showing me the same companies over and 
 ## Known issues (aka the honesty section)
 
 - Finding emails is hit-or-miss. No public email = it tells me to find it myself.
-- Sometimes a fake placeholder email like `john.doe@` sneaks past. Rude.
-- The name-deduplication could in theory merge two different companies with similar names. Hasn't bitten me yet. Yet.
-- All this JSON juggling is getting silly — might move it to a proper SQLite database one day.
+- Sometimes a fake placeholder email like `john.doe@` sneaks past. 
+- The name-deduplication could in theory merge two different companies with similar names.
+- All this JSON juggling is getting long — might move it to a proper SQLite database one day.
 - Want to add follow-up reminders for companies that ghost me.
 
 ## Why I bothered
