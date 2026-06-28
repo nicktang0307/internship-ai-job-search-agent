@@ -1,0 +1,25 @@
+# Secrets — NEVER commit these
+.env
+
+# Personal data (your applications, search history)
+applied_companies.json
+seen_companies.json
+seen_names.json
+tried_topics.json
+companies_ready.json
+drafts.json
+drafts.html
+
+# Python junk
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# IDE
+.idea/
+.vscode/
+
+# Logs
+*.log
+run_log.txt
