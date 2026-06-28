@@ -33,25 +33,18 @@ DRAFTS_FILE = "drafts.json"                # output
 
 # Your background — Claude uses this to personalise each email
 MY_PROFILE = """
-Name: Nicholas Tang
-Status: Data Science Master's student at UNSW Sydney (graduating Nov 2026)
+Name: 
+Status: 
 
 What I'm looking for:
-- An unpaid internship in Sydney to get real-world experience before I graduate
-- I care more about learning and contributing than about pay at this stage
-- Open to data analyst, data science, or any role where I can be useful
-- Genuinely want to apply what I've studied to actual business problems
-- Prefer startup/small team, but don't mind big companies
+
 
 Background:
-- Bachelor in Business Analytics & Statistics, University of Auckland (GPA 8.0/9.0, Senior Scholar Award)
-- Former Teaching Assistant in Statistics
 
-Skills: Python, SQL, R, Tableau, AWS (Certified Cloud Practitioner)
-Languages: English, Cantonese, Mandarin (trilingual)
 
-Tone preference: casual, under 80 words, genuine and not salesy.
-Subject line format: "Nicholas Tang (UNSW Data Science) — Unpaid Intern"
+Skills: 
+
+Tone preference: 
 """
 
 # =========================================================
