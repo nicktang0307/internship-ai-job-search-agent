@@ -29,6 +29,7 @@ MODEL = "claude-haiku-4-5-20251001"
 
 RESULTS_FILE = "companies_ready.json"      # input (from agent)
 APPLIED_FILE = "applied_companies.json"    # companies already emailed
+REJECTED_FILE = "rejected.json"
 DRAFTS_FILE = "drafts.json"                # output
 
 # Your background — Claude uses this to personalise each email
@@ -69,11 +70,9 @@ def save_json(path, data):
     with open(path, "w") as f:
         json.dump(data, f, indent=2)
 
-
 def clean_name(name):
-    """Lowercase + strip common suffixes so 'Synogize Pty Ltd' == 'Synogize'."""
     name = name.lower()
-    name = re.sub(r'\b(pty|ltd|limited|inc|group|technologies|tech|analytics|consulting|solutions)\b', '', name)
+    name = re.sub(r'\b(pty|ltd|limited|inc|group|technologies|tech|analytics|consulting|solutions|media|agency|digital|studio|studios|labs|co)\b', '', name)
     name = re.sub(r'[^a-z0-9]', '', name)
     return name.strip()
 
@@ -127,6 +126,10 @@ def main():
     applied_names = {clean_name(a["company_name"]) for a in applied}
     applied_urls = {a["url"] for a in applied}
 
+    rejected = load_json(REJECTED_FILE, [])
+    rejected_names = {clean_name(r["company_name"]) for r in rejected}
+    rejected_urls = {r["url"] for r in rejected}
+
     existing_drafts = load_json(DRAFTS_FILE, [])
     drafted_names = {clean_name(d["company_name"]) for d in existing_drafts}
     drafted_urls = {d["url"] for d in existing_drafts}
@@ -137,6 +140,8 @@ def main():
         name_key = clean_name(c["company_name"])
         if name_key in applied_names or c["url"] in applied_urls:
             continue  # already applied — skip
+        if name_key in rejected_names or c["url"] in rejected_urls:
+            continue  # rejected — skip
         if name_key in drafted_names or c["url"] in drafted_urls:
             continue  # already drafted — skip
         to_draft.append(c)
