@@ -1,12 +1,13 @@
 """
-mark_applied.py — Track which companies you actually emailed
-=============================================================
+mark_applied.py — Track which companies you emailed, and which you rejected
+============================================================================
 Reads drafts.json, shows each draft, asks if you sent it.
-- 'y' → recorded in applied_companies.json AND removed from drafts.json
-- 'n' → removed from drafts.json (you decided to skip it)
+- 'y' → recorded in applied_companies.json  + removed from drafts.json
+- 'n' → recorded in rejected.json           + removed from drafts.json
 - 'q' → quit, saving progress so far
 
-So once you've answered for a company, it won't show up again next time.
+Both applied and rejected companies are excluded from future runs,
+so nothing you've already decided on comes back.
 
 Run:
     python mark_applied.py
@@ -14,10 +15,12 @@ Run:
 
 import json
 import os
+import re
 from datetime import date
 
 DRAFTS_FILE = "drafts.json"
 APPLIED_FILE = "applied_companies.json"
+REJECTED_FILE = "rejected.json"
 
 
 def load_json(path, default):
@@ -36,6 +39,14 @@ def save_json(path, data):
         json.dump(data, f, indent=2)
 
 
+def clean_name(name):
+    """Lowercase + strip common suffixes so 'Adrenalin Media' == 'Adrenalin'."""
+    name = name.lower()
+    name = re.sub(r'\b(pty|ltd|limited|inc|group|technologies|tech|analytics|consulting|solutions|media|agency|digital|studio|studios|labs|co)\b', '', name)
+    name = re.sub(r'[^a-z0-9]', '', name)
+    return name.strip()
+
+
 def main():
     drafts = load_json(DRAFTS_FILE, [])
     if not drafts:
@@ -43,18 +54,18 @@ def main():
         return
 
     applied = load_json(APPLIED_FILE, [])
+    rejected = load_json(REJECTED_FILE, [])
 
     print(f"{len(drafts)} drafts to review.")
-    print("For each: 'y' = sent it, 'n' = skip it, 'q' = quit.")
-    print("Either way (y or n), the company is removed from drafts.\n")
+    print("For each: 'y' = sent it, 'n' = not interested, 'q' = quit.")
+    print("Either y or n removes it from drafts and stops it coming back.\n")
 
-    # We'll keep only the drafts we DIDN'T get to (in case of quit)
     remaining = []
-
     quit_early = False
+
     for i, d in enumerate(drafts, 1):
         if quit_early:
-            remaining.append(d)   # keep the rest untouched
+            remaining.append(d)
             continue
 
         print("=" * 55)
@@ -67,7 +78,7 @@ def main():
 
         if answer == "q":
             print("Quitting — progress saved.")
-            remaining.append(d)   # this one wasn't decided, keep it
+            remaining.append(d)
             quit_early = True
         elif answer == "y":
             applied.append({
@@ -78,17 +89,20 @@ def main():
                 "followed_up": False,
             })
             print("    ✅ Recorded as applied + removed from drafts\n")
-            # not added to remaining → removed from drafts
-        else:  # 'n' or anything else
-            print("    ⏭️  Skipped + removed from drafts\n")
-            # not added to remaining → removed from drafts
+        else:  # 'n'
+            rejected.append({
+                "company_name": d["company_name"],
+                "url": d["url"],
+                "date_rejected": str(date.today()),
+            })
+            print("    🚫 Recorded as rejected + removed from drafts\n")
 
-    # Save: applied list grows, drafts shrinks to only what's left
     save_json(APPLIED_FILE, applied)
+    save_json(REJECTED_FILE, rejected)
     save_json(DRAFTS_FILE, remaining)
 
     print("=" * 55)
-    print(f"Done! {len(applied)} companies in {APPLIED_FILE}")
+    print(f"Done! {len(applied)} applied, {len(rejected)} rejected.")
     print(f"{len(remaining)} drafts left in {DRAFTS_FILE}")
 
 
