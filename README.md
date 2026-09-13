@@ -4,7 +4,6 @@ A personal Python project that finds potential internship targets in Sydney, scr
 
 **Email sending stays manual.** The agent prepares drafts; I decide whether to apply and send the message myself.
 
-> **Repository status:** The Python files currently published here are the original local version. The AWS workflows and review website described below have been deployed in my personal account, but their deployment templates and updated source files have not yet been added to this repository. The first section is a reference for operating that existing deployment, not a fresh-install guide. This README update does not deploy or change any AWS resources.
 
 ## Start here: my AWS operating procedure
 
